@@ -2,7 +2,7 @@
 version: '3.8'
 
 services:
-  postgres:
+  pg:
     image: postgres:alpine
     ports: 
       - 35432:5432
