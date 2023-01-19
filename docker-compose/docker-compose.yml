@@ -25,5 +25,5 @@ services:
         condition: on-failure
         max_attempts: 10
     depends_on:
-      postgres:
+      pg:
         condition: service_started
