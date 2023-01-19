@@ -47,6 +47,12 @@ export class Runner extends BaseRunner {
       // }
 
       // increase block number
+
+      if (this.currentBlockNumber % 100n === 0n) {
+        logger.info(`update current tip to: ${this.currentBlockNumber}`);
+        await this.query.updateCurrentTip(this.currentBlockNumber);
+      }
+
       this.currentBlockNumber += BigInt(count);
     }
 
@@ -106,11 +112,6 @@ export class Runner extends BaseRunner {
       };
 
       await this.query.save(contract, factoryScript, token);
-    }
-
-    if (blockNumber % 100n === 0n) {
-      logger.info(`update current tip to: ${blockNumber}`);
-      await this.query.updateCurrentTip(blockNumber);
     }
 
     return true;
