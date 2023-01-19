@@ -7,6 +7,7 @@ export const Config = {
   ckbRPC: getOptional("CKB_RPC") || "https://mainnet.ckbapp.dev/rpc",
   tokenDataHeader: "0x0ddeff3e8ee03cbf6a2c6920d05c381e",
   databaseUrl: getRequired("DATABASE_URL"),
+  fetchCount: getOptional("FETCH_COUNT") || "1",
 };
 
 function getRequired(name: string): string {

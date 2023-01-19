@@ -27,29 +27,27 @@ export class Runner extends BaseRunner {
 
   public async poll() {
     while (true) {
-      // const count = 10;
+      const count = +Config.fetchCount;
 
-      // const results = await Promise.all
-      // (
-      //     [...Array(10).keys()]
-      //     .map(n => this.currentBlockNumber + BigInt(n))
-      //     .map((num) => {
-      //         return this.processOneBlock(num)
-      //     })
-      // )
-      // console.log("results:", results)
+      const results = await Promise.all(
+        [...Array(count).keys()]
+          .map((n) => this.currentBlockNumber + BigInt(n))
+          .map((num) => {
+            return this.processOneBlock(num);
+          })
+      );
 
-      // if (results.includes(false)) {
-      //     break;
-      // }
-
-      const result = await this.processOneBlock(this.currentBlockNumber);
-      if (result === false) {
+      if (results.includes(false)) {
         break;
       }
 
+      // const result = await this.processOneBlock(this.currentBlockNumber);
+      // if (result === false) {
+      //   break;
+      // }
+
       // increase block number
-      this.currentBlockNumber += 1n;
+      this.currentBlockNumber += BigInt(count);
     }
 
     return 1000;
