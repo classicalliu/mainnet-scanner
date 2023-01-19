@@ -29,12 +29,14 @@ export class Runner extends BaseRunner {
     while (true) {
       const count = +Config.fetchCount;
 
+      const numbers = [...Array(count).keys()].map(
+        (n) => this.currentBlockNumber + BigInt(n)
+      );
+
       const results = await Promise.all(
-        [...Array(count).keys()]
-          .map((n) => this.currentBlockNumber + BigInt(n))
-          .map((num) => {
-            return this.processOneBlock(num);
-          })
+        numbers.map((num) => {
+          return this.processOneBlock(num);
+        })
       );
 
       if (results.includes(false)) {
@@ -48,9 +50,10 @@ export class Runner extends BaseRunner {
 
       // increase block number
 
-      if (this.currentBlockNumber % 100n === 0n) {
-        logger.info(`update current tip to: ${this.currentBlockNumber}`);
-        await this.query.updateCurrentTip(this.currentBlockNumber);
+      if (numbers.find((num) => num % 100n === 0n) != null) {
+        const lastNumber = numbers[numbers.length - 1];
+        logger.info(`update current tip to: ${lastNumber}`);
+        await this.query.updateCurrentTip(lastNumber);
       }
 
       this.currentBlockNumber += BigInt(count);
