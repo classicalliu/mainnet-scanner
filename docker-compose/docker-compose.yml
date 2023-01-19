@@ -1,0 +1,29 @@
+# Requires docker-compose >= 1.29.0
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:alpine
+    ports: 
+      - 35432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: scanner
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+
+  scanner:
+    image: ghcr.io/classicalliu/mainnet-scanner:develop-9017d2f
+    init: true
+    volumes:
+      - ./.env-for-docker-compose:/mainnet-scanner/.env
+      - ./entrypoint.sh:/var/lib/scanner/entrypoint.sh
+    entrypoint: /var/lib/scanner/entrypoint.sh
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+    depends_on:
+      postgres:
+        condition: service_started
